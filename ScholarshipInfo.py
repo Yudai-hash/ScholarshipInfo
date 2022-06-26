@@ -1,12 +1,9 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-import time
+
 import pandas as pd
 import urllib.request as req
-
-USER = "test_user"
-PASS = "test_pw"
 
 #GoogleChrome
 browser = webdriver.Chrome(executable_path = '/cygdrive/g/マイドライブ/水内研究室関連/MyPandas/chromedriver.exe')
@@ -16,6 +13,7 @@ browser.implicitly_wait(3)
 url_login = "https://www.e-grant.jp/"
 browser.get(url_login)
 time.sleep(3)
+
 print("ログインページにアクセスした")
 print("")
 #公的機関向け情報をクリック
@@ -71,45 +69,32 @@ print(Cases[Distance+1:])
 AllCases = browser.find_element(By.XPATH,'//*[@id="pager_box"]/p/span[1]').text
 print(AllCases)
 
+#全体の件数を各ページの件数で割ると、商とあまりが求める
+#for文を2重で使う
+#一番外のfor文は、商だけ
+#一番内側のfor文は、そのページの件数の文だけ回す
+#その後に,新たに一重のforをあまりだけ回す
+#i.e)全体165件 1ページの件数が10件の場合
+#165=10×16+5
+#for in range(1,16+1):
+#  for in range(1,10+1):
+#    hogehoge
+#for in range(1,5+1):
+#  hogehoge
 
 frm = browser.find_element(By.XPATH,'//*[@id="pager_box"]/ul/li[3]/a')
 time.sleep(1)
 frm.click()
 print("Move next page")
 time.sleep(5)
-#ここは、いらない
-#lists = browser.find_element(By.CLASS_NAME,"page_list")
-#data = pd.read_html(cur_url)
-#lists = []
 
-##ここは、いらない
-#lists.append(browser.find_element(By.XPATH,'//*[@id="replaceContent"]/ul/li[1]/div'))
-#lists.append(browser.find_element(By.XPATH,'//*[@id="replaceContent"]/ul/li[2]/div'))
 
-#print(lists)
-#print("ページリスト取得")
+if __name__()  == '__main__':
+    ##ここで、その日の日付と時間を読み込んで、それをファイル名に入れたい(例:scholar20220626.pdf みたいに)
+    main('schlar'+str()+'.pdf')
 
-##ここは、いらない
-#parse_html = BeautifulSoup(cur_url,'html.parser')
-#print(parse_html)
-#print(parse_html.prettify())
 
-##ここは、いらない
-#print("parse_html.find_all(li)")
-#print(parse_html.find_all('li'))
-#print(parse_html.find_all(li))
-
-##下は、div > liのスクレイピングができた例
-#print(browser.find_element(By.XPATH,'//*[@id="replaceContent"]/ul/li[1]/div/h2').text)
-#print("")
-#print(browser.find_element(By.XPATH,'//*[@id="replaceContent"]/ul/li[1]/div/p').text)
-#print("")
-#print(browser.find_element(By.XPATH,'//*[@id="replaceContent"]/ul/li[2]/div').text)
-#print("")
-#print(browser.find_element(By.XPATH,'//*[@id="replaceContent"]/ul/li[2]/div/h2').text)
-#print("")
-#print(browser.find_element(By.XPATH,'//*[@id="replaceContent"]/ul/li[2]/div/p').text)
-#print("")
+#最初からmain関数で書くとろくなこと(無茶苦茶時間かかる、一個一個確実にやったほうが良い)
 
 
 
@@ -120,6 +105,4 @@ time.sleep(5)
 
 
 
-
-
-
+ 
