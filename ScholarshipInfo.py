@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 
 import pandas as pd
 import urllib.request as req
+import time
+import  datetime
 
 #GoogleChrome
 browser = webdriver.Chrome(executable_path = '/cygdrive/g/マイドライブ/水内研究室関連/MyPandas/chromedriver.exe')
@@ -35,7 +37,7 @@ parse_html = BeautifulSoup(response,'html.parser')
 #print("")
 #print("parse_html.li")
 #print(parse_html.li)
-#print("")
+#print("")n
 #print("parse_html.ul")
 #print(parse_html.ul.li)
 #print("")
@@ -88,10 +90,19 @@ frm.click()
 print("Move next page")
 time.sleep(5)
 
+################
+t_delta = datetime.timedelta(hours=9)
+JST = datetime.timezone(t_delta,'JST')
+now = datetime.datetime.now(JST)
+d = now.strftime('%Y%m%d%H%M%S')
+print(repr(now))
+print(now)
+print(d)
+################
 
 if __name__()  == '__main__':
     ##ここで、その日の日付と時間を読み込んで、それをファイル名に入れたい(例:scholar20220626.pdf みたいに)
-    main('schlar'+str()+'.pdf')
+    main('schlar'+str(d)+'.pdf')
 
 
 #最初からmain関数で書くとろくなこと(無茶苦茶時間かかる、一個一個確実にやったほうが良い)
