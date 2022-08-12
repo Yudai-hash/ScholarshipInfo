@@ -1,87 +1,58 @@
-from PIL import Image
-from reportlib.pdfgen import canvas
-from reportlib.pdfbase.ttfonts import TTFont
-from reportlib.pdfbase import pdfmeterics
-from reportlib.lib.units import cm
-import csv
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4,portrait
+from reportlab.pdfbase import pdfmetrics
+from reportlab.lib.units import cm
+from reportlab.pdfbase.ttfonts import TTFont
+import  datetime
 
-#pdfを作るコード
-def pdfBuilder(output_filename):
-    POINT = 1
-    ##フォントをpdfmetrics.registor()メソッドの引数に入れる
-    pdfmetrics.registerFont(TTFont('MSPゴシック',''))
-    xofs = 0.1 * cm
-    yofs = 0.1 * cm
-    paper_height = 29.7 * cm
+def create_pdf(a):
+    ################
+    ##ここで、その日の日付と時間を読み込んで、それをファイル名に入れたい(例:scholar20220626.pdf みたいに)
+    t_delta = datetime.timedelta(hours=9)
+    JST = datetime.timezone(t_delta,'JST')
+    now = datetime.datetime.now(JST)
+    d = now.strftime('%Y%m%d%H%M%S')
+    #print(repr(now))
+    #print(now)
+    #print(d)
+    string1 = "scholar"
+    string2 = ".pdf"
+    ################
+    
+    #####関数呼び出さない#######
+    ######PDFファイルを生成する###################
+    file_name = d + string2 ##ファイル名を設定
+    pdf = canvas.Canvas(file_name,pagesize=portrait(A4)) ##PDFを生成、サイズA4
+    pdf.saveState() ##セーブ?初期化?
 
-    c = canvas.Canvas(output_filename,papersize = (21.0 * cm,paper_height))
-    c.setStrokeColorRGB(0,0,0)
-    c.setLineWidth(1)
-    c.setFont('MSPゴシック',10 * POINT)
+    ###############ここ必要？
+    #pdf.setAuthor('OFFICE54')
+    #pdf.setTitle('TEST')
+    #pdf.setSubject('TEST')
 
-    header_ary = [['テーマ',1.0],['説明',2.0],['情報先',3.0],['公開日',4.0],['URL',\
-5.0],['実施機関',6.0],['募集期間',7.0],['予算',8.0]]
-    #1行の高さ
-    height_row = 1.5
-    start_cm_x = 2 * cm
-    start_cm_y = paper_hight - 2 * cm
-    tblheight = (len(dicary) + 1) * height_rows * cm
-    end_y = start_cm_y - tblheight
+    ###図形の描写####################
+    #pdf.setFillColorRGB(54,54,0)
+    #pdf.rect(1*cm,1*cm,4*cm,4*cm,stroke=1,fill=1)
+    #pdf.setFillColorRGB(0,0,0)
 
-    #表のXエンドの一取得
-    end_cm_x = start_cm_x
-    for tc in header_ary:
-        end_cm_x += tc[1] * cm
+    ####線の描写#########
+    #pdf.setLineWidth(1)
+    #pdf.line(10.5*cm,27*cm,10.5*cm,1*cm)
 
-    #ヘッダの背景色を塗る
-    c.setFillColorRGB(0,200,200)
-    c.rect(start_cm_x,start_cm_y,end_cm_x - start_cm_x, -height_rows * cm,stroke=1,\
-fill = 1)
-    c.setFillColorRGB(0,0,0)
+    ####フォントを設定##########
+    pdfmetrics.registerFont(TTFont('HGRGE',"C:/Windows/Fonts/HGRGE.TTC"))
+    pdf.setFont('HGRGE',12) #フォント初期化?
 
-    #横線
-    dx = start_cm_x
-    # 横線
-    c.line(start_cm_x, start_cm_y, end_cm_x, start_cm_y)
-    for i in range(len(dicary)+1):
-        dy = start_cm_y - (i+1) * height_rows * cm
-        c.line(start_cm_x, dy, end_cm_x, dy)
+    #####文字を描写#########
+    pdf.drawString(1*cm,26*cm,a)
 
-    # 縦線
-    dx = start_cm_x 
-    c.line(dx, start_cm_y, dx, end_y)
-    for tc in header_ary:
-        dx += tc[1] * cm
-        c.line(dx, start_cm_y, dx, end_y)
+    pdf.setFont('HGRGE',20) ##フォントの変更
+    width,height = A4 ###A4用紙の紙
+    pdf.drawCentredString(width/2,height-2*cm,'研究助成金')
 
-    # ヘッダー描画
-    dx = start_cm_x 
-    dy = start_cm_y - height_rows * cm
-    for tc in header_ary:
-        wx = dx + tc[1] * cm / 2
-        # センタリング描画
-        c.drawCentredString(wx, dy+yofs, tc[0])
-        dx += tc[1] * cm
+    pdf.restoreState()
+    pdf.save()
 
-    # データ描画
-    dy = start_cm_y - height_rows * 2 * cm
-    for dt in dicary:
-        dx = start_cm_x 
-        for i, tc in enumerate(header_ary):
-            if i == 0 or i == 3:
-                wx = dx + tc[1] * cm - xofs
-                c.drawRightString(wx, dy+yofs, dt[tc[0]])
-            elif i == 5:
-                imgpath = './data/' + dt[tc[0]]
-                img = Image.open(imgpath)
-                sch = img.width / (image_width * cm)
-                scv = img.height / (height_rows * cm)
-                sc = max(sch, scv)
-                c.drawImage(imgpath, dx, dy, 
-                    width=int(img.width/sc), height=int(img.height/sc))
-            else:
-                c.drawString(dx+xofs, dy+yofs, dt[tc[0]])
-            dx += tc[1] * cm
-        dy -= height_rows * cm
-    c.showPage()
-    c.save()
+if __name__ == '__name__':
+    Create_pdf(a)
