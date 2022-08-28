@@ -26,7 +26,6 @@ time.sleep(1)
 frm.click()
 print('公的機関向け情報の取得')
 print("")
-
 #現在のURLを取得する
 cur_url = browser.current_url
 #1秒間待機
@@ -87,47 +86,30 @@ AllCases = browser.find_element(By.XPATH,'//*[@id="pager_box"]/p/span[1]').text
 
 #3 should be replaced with int(int(AllCases)//int(cases))+1
 
-#print(int(AllCases)) #310
-#print(int(cases)) #10
-#print(int(int(AllCases)//int(cases))) #31
-userInput = input("入力してください:\n 電気・電子\n化学\n金属・機械\n食品・バイオ\n医療・介護\n環境・新エネルギー\n材料\nその他\n")
-print("あなたは"+userInput+"を入力しました")
-
 a_list = []
-countNumber = 0
 for j in range(1,int(int(AllCases)//int(cases))+1):
     for i in range(1,int(cases)+1):
         #a = browser.find_element(By.XPATH,'//*[@id="replaceContent"]/ul/li['+str(i)+']/div').text
         a = browser.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[1]/div/ul/li['+str(i)+']/div/h2/a').text
         b = browser.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[1]/div/ul/li['+str(i)+']/div/dl[2]/dd').text
         c = browser.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[1]/div/ul/li['+str(i)+']/div/dl[3]/dd').text
-        if browser.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[1]/div/ul/li['+str(i)+']/div/ul/li[2]').text == str(userInput):
-            #医療・介護
+        if browser.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[1]/div/ul/li['+str(i)+']/div/ul/li[2]').text == "医療・介護":
             a_list.append(a)
             a_list.append(b)
             a_list.append(c)
             print(a)
             print(b)
             print(c)
-            countNumber = countNumber + 1
-            print(countNumber)
         else:
             pass
     print("")
 
-    if j <= int(int(AllCases)//int(cases))+1-1-1: #range(1,2)とすると1以上1未満であるので、さらに-1
-        frm = browser.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[1]/div/div[3]/ul/li[3]/a')
-        #/html/body/div[1]/div[3]/div/div[1]/div/div[3]/ul/li[3]/a
-        #//*[@id="pager_box"]/ul/li[3]/a
-
-        time.sleep(1)
-        frm.click()
-
-        print("Move next page"+str(j))
-        time.sleep(5)
-
-    else:
-        print("No move further")
+    frm = browser.find_element(By.XPATH,'//*[@id="pager_box"]/ul/li[3]/a')
+    time.sleep(1)
+    frm.click()
+    
+    print("Move next page")
+    time.sleep(5)
 #for k in range(1,(int(AllCases)%int(cases))+1):
 #    a = browser.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[1]/div/ul/l#i['+str(i)+']/div/h2/a').text
 #    b = browser.find_element(By.XPATH,'/html/body/div[1]/div[3]/div/div[1]/div/ul/l#i['+str(i)+']/div/dl[2]/dd').text
@@ -144,8 +126,7 @@ for j in range(1,int(int(AllCases)//int(cases))+1):
 
 #a_wrap_list = textwrap.wrap(a_list,40)
 #a_wrap_after = '\n'.join(a_wrap_list)
-print(countNumber)
-create_pdf.create_pdf(a_list,countNumber,userInput)
+create_pdf.create_pdf(a_list,int(int(AllCases)//int(cases))+1)
 
 
 
